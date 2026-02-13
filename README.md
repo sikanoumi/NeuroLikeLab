@@ -68,20 +68,23 @@ NeuroLikeLab is a minimal, reproducible experimental harness for **“persona as
 cd "C:\Users\志賀海\開発\NeuroLikeLab"
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
 
+Setup
+
+# in project root
+python -m pip install -r requirements.txt
 
 Start server (Ollama + FastAPI)
 
-Start Ollama Desktop beforehand.
-
-cd "C:\Users\志賀海\開発\NeuroLikeLab"
 $env:OLLAMA_URL="http://127.0.0.1:11434"
 $env:OLLAMA_MODEL="qwen3:8b"
-.\.venv\Scripts\python.exe -m uvicorn app:app --host 127.0.0.1 --port 8011 --log-level info
+python -m uvicorn app:app --host 127.0.0.1 --port 8011 --log-level info
 
 Health check
+
 irm http://127.0.0.1:8011/health
 
 Call /persona (PowerShell UTF-8 safe)
+
 chcp 65001
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
@@ -101,15 +104,12 @@ irm http://127.0.0.1:8011/persona `
   -ContentType "application/json; charset=utf-8"
 
 Logs
+
 Get-Content -Encoding utf8 .\runs\run_ollama_001.jsonl -Tail 1
 Get-Content -Encoding utf8 .\runs\metrics_latest.json -Tail 80
 
-Eval (Ollama / policy + router)
-cd "C:\Users\志賀海\開発\NeuroLikeLab"
-.\.venv\Scripts\python.exe .\experiments\run_eval.py
-Get-Content -Encoding utf8 .\runs\metrics_latest.json
-
 Project structure (high level)
+
 NeuroLikeLab/
 ├─ app.py
 ├─ core/
@@ -120,51 +120,22 @@ NeuroLikeLab/
 ├─ runs/
 └─ logs/   (optional)
 
-
 Notes
 
 Experimental evidence is stored under runs/ (metrics JSON + JSONL logs).
 
-Avoid committing large artifacts (e.g., JSONL logs). Keep snapshot metrics and summarize results in README/Notion.
+Avoid committing large artifacts (e.g., JSONL logs). Keep snapshot metrics and summarize key results in README.
 
 
 ---
 
-## これでAは“完了”になる（チェック）
-- ✅ 完成定義Bが冒頭で明文化
-- ✅ 表① Variant差分
-- ✅ 表② Persona別差分（今回の成果が主役）
-- ✅ 解釈3行（長文なし）
-- ✅ ベンチ宣言（標準ベンチ明記）
-- ✅ コードブロック崩れ修正（余計な「コードをコピーする」除去）
-
----
-
-# 次：D（Git化）に進む
-いま `runs/metrics_router100_20260212.json` も用意できたから、あとは **git init → commit → push** で公開できる。
-
-まずローカルでここまでやろう（remoteは後でOK）：
+## これを反映する手順（最短）
+1) ローカルの `README.md` を **全消し→上の内容を全貼り→保存**
+2) コミットして push
 
 ```powershell
-cd "C:\Users\志賀海\開発\NeuroLikeLab"
+git add README.md
+git commit -m "Polish README (portfolio-ready)"
+git push
 
-# .gitignore（なければ作る）
-@"
-.venv/
-__pycache__/
-*.pyc
-node_modules/
-.next/
 
-runs/*.jsonl
-runs/run_ollama_*.jsonl
-
-.DS_Store
-Thumbs.db
-.vscode/
-.idea/
-"@ | Set-Content -Encoding utf8 .\.gitignore
-
-git init
-git add README.md app.py core experiments prompts runs/metrics_router100_20260212.json .gitignore
-git commit -m "Public snapshot: v0.3-router1 (router100 + persona breakdown + agemem gate)"
