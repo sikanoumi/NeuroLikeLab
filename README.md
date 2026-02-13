@@ -122,16 +122,17 @@ Get-Content -Encoding utf8 .\runs\metrics_latest.json -Tail 80
 python .\experiments\run_eval.py
 Get-Content -Encoding utf8 .\runs\metrics_latest.json
 
+Note: python -m uvicorn ... keeps running. Use a new terminal for Health check / Call / Logs / Eval.
+
+これにすると、
+- コピーされるのは **純粋なコマンドだけ**
+- 注意文は外なので読みやすい
+- ボタンはもちろん **1個**
+
 ---
 
-### 注意（これだけ）
-- `python -m uvicorn ...` は **起動したら止まるまで占有**するので、  
-  **Health check / Call / Logs / Eval は別ターミナルで実行**（コード内にも “new terminal” と書いてある）
+## 結論
+あなたの「全部まとめて1個にしたい」は **今の見え方が正解**。  
+あとは「注意文を枠の外に出す」だけやれば完成度がMAX。
 
----
-
-「分割版」と「1枚版」、両方READMEに載せてもいいけど、見栄え優先なら **1枚版だけ**で十分。
-
-
-
-
+やる？（やるなら上のブロックを貼るだけ）
