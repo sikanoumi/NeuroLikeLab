@@ -65,8 +65,9 @@ NeuroLikeLab is a minimal, reproducible experimental harness for **“persona as
 
 ### Setup
 ```powershell
-cd "C:\Users\志賀海\開発\NeuroLikeLab"
-.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+# in project root
+python -m pip install -r requirements.txt
+
 
 Setup
 
