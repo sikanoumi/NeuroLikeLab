@@ -1,4 +1,12 @@
 # NeuroLikeLab (v0.3-router1)
+
+<p>
+  <img src="https://img.shields.io/badge/Python-3.x-blue?style=for-the-badge&logo=python&logoColor=white">
+  <img src="https://img.shields.io/badge/FastAPI-000000?style=for-the-badge&logo=fastapi&logoColor=white">
+  <img src="https://img.shields.io/badge/Ollama-000000?style=for-the-badge">
+  <img src="https://img.shields.io/badge/LoRA-6f42c1?style=for-the-badge">
+</p>
+
 **text → emotion → latent_state(6-axis) → state_update → persona decision → JSONL logs → eval(metrics)**  
 NeuroLikeLab is a minimal, reproducible experimental harness for **“persona as policy”** research.
 
@@ -15,8 +23,8 @@ NeuroLikeLab is a minimal, reproducible experimental harness for **“persona as
 ---
 
 ## Evidence (fixed snapshot)
-- `runs/metrics_router100_20260212.json` （本READMEの数値の根拠）
-- Standard bench: `experiments/eval_100cases.router.jsonl`
+- `runs/metrics_router100_20260213.json`（本READMEの数値の根拠）
+- Standard bench: `experiments/eval_100cases.router100.jsonl`
 
 ---
 
@@ -38,15 +46,19 @@ NeuroLikeLab is a minimal, reproducible experimental harness for **“persona as
 
 ---
 
-## ② Persona別差分（Router100 / 2026-02-12）
-> This table is the key proof that **retrieval policy differs by persona** (via routing + gate logs).
+## ② Persona別差分（Router100 / 2026-02-13）
+> Proof that **routing + memory policy differs by persona** (router + gate logs).
 
 | persona | n | decision_acc | router_acc | retrieve_attempted | skipped_by_gate | executed | hit_rate |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| action_v0 | 65 | 0.8000 | 1.0000 | 41 | 41 | 0 | - |
-| safety_v0 | 35 | 0.7429 | 1.0000 | 36 | 36 | 0 | - |
+| action_v0 | 61 | 0.8689 | 1.0000 | 33 | 33 | 0 | - |
+| safety_v0 | 34 | 0.5882 | 1.0000 | 34 | 34 | 0 | - |
+| creative_v0 | 5 | 0.0000 | 1.0000 | 0 | 0 | 0 | - |
+
+> Note: creative cases in the router100 bench are used for **router coverage** (decision labels omitted or treated separately).
 
 ---
+
 ## UI Demo (optional)
 ![UI demo](docs/ui_lab.png)
 
@@ -54,16 +66,26 @@ NeuroLikeLab is a minimal, reproducible experimental harness for **“persona as
 - Decision + memory actions are visible (`persona.decision`, `memory_action_results`)
 - Same concepts as eval metrics, but reproducible interactively
 
+---
+
 ## 解釈（3行）
-- `decision_acc=0.78` の主因は **defer / ask_clarify 境界**の揺れ（曖昧入力で分岐が割れる）。
-- `retrieve_executed=0` は **AgeMem gate が全件で発火**して retrieve を抑制していることを示す（不要なretrieve回避側に倒れている）。
+- `decision_acc` の主因は **defer / ask_clarify 境界**の揺れ（曖昧入力で分岐が割れる）。
+- `retrieve_executed=0` は **AgeMem gate が発火**して retrieve を抑制していることを示す（不要なretrieve回避側に倒れている）。
 - 次の改善は **gate閾値（q_len等）/ task条件**の調整、または **query正規化**で executed を意図的に出して比較可能にする。
 
 ---
 
 ## Bench（標準ベンチ）
-標準ベンチは `experiments/eval_100cases.router.jsonl`。  
-`expected_decision / expected_persona_id / task` を含み、decision/router/memory/retrieve を同一ケースで評価する。
+標準ベンチは `experiments/eval_100cases.router100.jsonl`。  
+`expected_persona_id / task` を含み、router を同一ケースで評価する（decisionは `expected_decision` があるケースのみ評価）。
+
+---
+
+## Env
+| name | role | example |
+|---|---|---|
+| OLLAMA_URL | Ollama endpoint | http://127.0.0.1:11434 |
+| OLLAMA_MODEL | Model name | qwen3:8b |
 
 ---
 
@@ -72,7 +94,6 @@ NeuroLikeLab is a minimal, reproducible experimental harness for **“persona as
 ### Setup
 ```powershell
 python -m pip install -r requirements.txt
-
 
 Start server (Ollama + FastAPI)
 
@@ -123,26 +144,20 @@ NeuroLikeLab/
 ├─ runs/
 └─ logs/   (optional)
 
+Troubleshooting
 
-Notes
+Ports are not available / address already in use → change port or stop the process using it
 
-Experimental evidence is stored under runs/ (metrics JSON + JSONL logs).
+timed out → ensure Ollama is running, reduce eval size, or increase httpx timeout
 
-Avoid committing large artifacts (e.g., JSONL logs). Keep snapshot metrics and summarize key results in README.
+invalid_json → switch model or tighten output schema/prompts
 
 
 ---
 
-### 反映（commit & push）
+反映はこれだけ：
+
 ```powershell
 git add README.md
-git commit -m "docs: clean README (remove chat text) + quickstart blocks"
+git commit -m "docs: finalize README (router100 + UI + persona table)"
 git push
-
-
----
-
-これで「会話文ゼロ」「Quickstartが崩れない」「コピー枠が分割で出る」版になる。
-
-次は **UIスクショ1枚**を `docs/ui_lab.png` に置いて、READMEに貼るだけ。  
-スクショ用の“最強の撮り方”もすぐ指示できるけど、まずはこの README 差し替えからいこう。
