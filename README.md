@@ -75,6 +75,8 @@ READMEの Quickstart セクションを 丸ごとこれに置き換えすれば�
 # in project root
 python -m pip install -r requirements.txt
 
+
+
 Start server (Ollama + FastAPI)
 
 Start Ollama Desktop beforehand.
@@ -116,9 +118,11 @@ Get-Content -Encoding utf8 .\runs\metrics_latest.json
 
 ---
 
-### 重要：こうすれば「コードをコピーする」になる
-- **説明文（Start Ollama〜）はコード枠の外**
-- **コマンドだけを ```powershell で囲む**
-- 各ブロックは **必ず ``` で閉じる**
+### これで「コードをコピーする」が分割で出る条件
+- **各ブロックが ` ```powershell` で始まり ` ``` ` で終わる**
+- 見出し/説明文は **コード枠の外**
 
-これで GitHub の表示が全部「コピーできるコード枠」になる。
+---
+
+これ貼ったあと、README下の「なるほど…」みたいな会話文が残ってたら消してOK。  
+最後に `git add README.md && git commit -m "README: fix quickstart blocks" && git push` で反映
