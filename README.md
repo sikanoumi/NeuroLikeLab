@@ -47,6 +47,12 @@ NeuroLikeLab is a minimal, reproducible experimental harness for **“persona as
 | safety_v0 | 35 | 0.7429 | 1.0000 | 36 | 36 | 0 | - |
 
 ---
+## UI Demo (optional)
+![UI demo](docs/ui_lab.png)
+
+- Input → Router selects persona (`routed_persona_id`)
+- Decision + memory actions are visible (`persona.decision`, `memory_action_results`)
+- Same concepts as eval metrics, but reproducible interactively
 
 ## 解釈（3行）
 - `decision_acc=0.78` の主因は **defer / ask_clarify 境界**の揺れ（曖昧入力で分岐が割れる）。
