@@ -94,19 +94,21 @@ NeuroLikeLab is a minimal, reproducible experimental harness for **“persona as
 ### Setup
 ```powershell
 python -m pip install -r requirements.txt
-
 Start server (Ollama + FastAPI)
-
 Start Ollama Desktop beforehand.
 
+powershell
+コードをコピーする
 $env:OLLAMA_URL="http://127.0.0.1:11434"
 $env:OLLAMA_MODEL="qwen3:8b"
 python -m uvicorn app:app --host 127.0.0.1 --port 8011 --log-level info
-
 Health check
+powershell
+コードをコピーする
 irm http://127.0.0.1:8011/health
-
 Call /persona (PowerShell UTF-8 safe)
+powershell
+コードをコピーする
 chcp 65001
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
@@ -124,16 +126,19 @@ irm http://127.0.0.1:8011/persona `
   -Method Post `
   -Body $bodyBytes `
   -ContentType "application/json; charset=utf-8"
-
 Logs
+powershell
+コードをコピーする
 Get-Content -Encoding utf8 .\runs\run_ollama_001.jsonl -Tail 1
 Get-Content -Encoding utf8 .\runs\metrics_latest.json -Tail 80
-
 Eval (Router100)
+powershell
+コードをコピーする
 python .\experiments\run_eval.py
 Get-Content -Encoding utf8 .\runs\metrics_latest.json
-
 Project structure (high level)
+text
+コードをコピーする
 NeuroLikeLab/
 ├─ app.py
 ├─ core/
@@ -143,21 +148,24 @@ NeuroLikeLab/
 ├─ prompts/
 ├─ runs/
 └─ logs/   (optional)
-
 Troubleshooting
-
 Ports are not available / address already in use → change port or stop the process using it
 
 timed out → ensure Ollama is running, reduce eval size, or increase httpx timeout
 
 invalid_json → switch model or tighten output schema/prompts
 
+yaml
+コードをコピーする
 
 ---
 
-反映はこれだけ：
+これが「貼り付けられるように」って意味での完成形。  
+貼ったら GitHub 上で **各ブロックが灰色枠で分かれて**、右上に「コードをコピーする」が自動で付く。
+
+最後に反映だけ（これはREADMEに書かなくてOK、PowerShellで実行）：
 
 ```powershell
 git add README.md
-git commit -m "docs: finalize README (router100 + UI + persona table)"
+git commit -m "docs: fix quickstart formatting"
 git push
