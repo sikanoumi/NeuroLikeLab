@@ -61,6 +61,13 @@ NeuroLikeLab is a minimal, reproducible experimental harness for **“persona as
 
 ---
 
+なるほど。「GitHubのREADMEで **“コードをコピーする” ボタンが付く “灰色のコード枠”**にしたい」ってことね。
+それは コードだけを powershell で囲む必要がある。いまは見出しや説明文までコード枠の中に入ってたり、逆にコード枠が閉じてなくて崩れてるから、ボタンが付かない。
+
+下のブロックは 全部ちゃんと “コピー枠” になる形で整えてある。
+READMEの Quickstart セクションを 丸ごとこれに置き換えすれば、各ブロック右上に「コードをコピーする」が出る。
+
+✅ Quickstart（そのままコピペで“コピー枠”になる版）
 ## Quickstart (Windows / PowerShell)
 
 ### Setup
@@ -68,24 +75,18 @@ NeuroLikeLab is a minimal, reproducible experimental harness for **“persona as
 # in project root
 python -m pip install -r requirements.txt
 
-
-Setup
-
-# in project root
-python -m pip install -r requirements.txt
-
 Start server (Ollama + FastAPI)
+
+Start Ollama Desktop beforehand.
 
 $env:OLLAMA_URL="http://127.0.0.1:11434"
 $env:OLLAMA_MODEL="qwen3:8b"
 python -m uvicorn app:app --host 127.0.0.1 --port 8011 --log-level info
 
 Health check
-
 irm http://127.0.0.1:8011/health
 
 Call /persona (PowerShell UTF-8 safe)
-
 chcp 65001
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
@@ -105,38 +106,19 @@ irm http://127.0.0.1:8011/persona `
   -ContentType "application/json; charset=utf-8"
 
 Logs
-
 Get-Content -Encoding utf8 .\runs\run_ollama_001.jsonl -Tail 1
 Get-Content -Encoding utf8 .\runs\metrics_latest.json -Tail 80
 
-Project structure (high level)
-
-NeuroLikeLab/
-├─ app.py
-├─ core/
-├─ experiments/
-├─ datasets/
-├─ memory/
-├─ prompts/
-├─ runs/
-└─ logs/   (optional)
-
-Notes
-
-Experimental evidence is stored under runs/ (metrics JSON + JSONL logs).
-
-Avoid committing large artifacts (e.g., JSONL logs). Keep snapshot metrics and summarize key results in README.
+Eval (Router100)
+python .\experiments\run_eval.py
+Get-Content -Encoding utf8 .\runs\metrics_latest.json
 
 
 ---
 
-## これを反映する手順（最短）
-1) ローカルの `README.md` を **全消し→上の内容を全貼り→保存**
-2) コミットして push
+### 重要：こうすれば「コードをコピーする」になる
+- **説明文（Start Ollama〜）はコード枠の外**
+- **コマンドだけを ```powershell で囲む**
+- 各ブロックは **必ず ``` で閉じる**
 
-```powershell
-git add README.md
-git commit -m "Polish README (portfolio-ready)"
-git push
-
-
+これで GitHub の表示が全部「コピーできるコード枠」になる。
