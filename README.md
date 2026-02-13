@@ -68,31 +68,18 @@ NeuroLikeLab is a minimal, reproducible experimental harness for **“persona as
 python -m pip install -r requirements.txt
 
 
-✅ Quickstart（そのままコピペで“コピー枠”になる版）
-## Quickstart (Windows / PowerShell) — One-shot
+Start server (Ollama + FastAPI)
 
-```powershell
-# =========================================
-# 0) Setup (first time only)
-# =========================================
-python -m pip install -r requirements.txt
+Start Ollama Desktop beforehand.
 
-# =========================================
-# 1) Start server (Ollama + FastAPI)
-#    Start Ollama Desktop beforehand.
-# =========================================
 $env:OLLAMA_URL="http://127.0.0.1:11434"
 $env:OLLAMA_MODEL="qwen3:8b"
 python -m uvicorn app:app --host 127.0.0.1 --port 8011 --log-level info
 
-# =========================================
-# 2) Health check (new terminal)
-# =========================================
+Health check
 irm http://127.0.0.1:8011/health
 
-# =========================================
-# 3) Call /persona (PowerShell UTF-8 safe)
-# =========================================
+Call /persona (PowerShell UTF-8 safe)
 chcp 65001
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
@@ -111,29 +98,45 @@ irm http://127.0.0.1:8011/persona `
   -Body $bodyBytes `
   -ContentType "application/json; charset=utf-8"
 
-# =========================================
-# 4) Logs
-# =========================================
+Logs
 Get-Content -Encoding utf8 .\runs\run_ollama_001.jsonl -Tail 1
 Get-Content -Encoding utf8 .\runs\metrics_latest.json -Tail 80
 
-# =========================================
-# 5) Eval (Router100)
-# =========================================
+Eval (Router100)
 python .\experiments\run_eval.py
 Get-Content -Encoding utf8 .\runs\metrics_latest.json
 
-Note: python -m uvicorn ... keeps running. Use a new terminal for Health check / Call / Logs / Eval.
+Project structure (high level)
+NeuroLikeLab/
+├─ app.py
+├─ core/
+├─ experiments/
+├─ datasets/
+├─ memory/
+├─ prompts/
+├─ runs/
+└─ logs/   (optional)
 
-これにすると、
-- コピーされるのは **純粋なコマンドだけ**
-- 注意文は外なので読みやすい
-- ボタンはもちろん **1個**
+
+Notes
+
+Experimental evidence is stored under runs/ (metrics JSON + JSONL logs).
+
+Avoid committing large artifacts (e.g., JSONL logs). Keep snapshot metrics and summarize key results in README.
+
 
 ---
 
-## 結論
-あなたの「全部まとめて1個にしたい」は **今の見え方が正解**。  
-あとは「注意文を枠の外に出す」だけやれば完成度がMAX。
+### 反映（commit & push）
+```powershell
+git add README.md
+git commit -m "docs: clean README (remove chat text) + quickstart blocks"
+git push
 
-やる？（やるなら上のブロックを貼るだけ）
+
+---
+
+これで「会話文ゼロ」「Quickstartが崩れない」「コピー枠が分割で出る」版になる。
+
+次は **UIスクショ1枚**を `docs/ui_lab.png` に置いて、READMEに貼るだけ。  
+スクショ用の“最強の撮り方”もすぐ指示できるけど、まずはこの README 差し替えからいこう。
