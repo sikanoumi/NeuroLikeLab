@@ -11,3 +11,19 @@ runs/run_ollama_*.jsonl
 Thumbs.db
 .vscode/
 .idea/
+
+# local artifacts
+_backup/
+.claude/
+data/
+datasets/
+lab/
+logs/
+scripts/
+tmp_body.json
+
+runs/metrics_latest.json
+runs/metrics_lora_*.json
+runs/eval_bad_lines.json
+runs/run_eval_*/
+runs/uvicorn_*.log
