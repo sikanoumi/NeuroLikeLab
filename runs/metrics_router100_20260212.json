@@ -1,0 +1,50 @@
+{
+  "ts_ms": 1770941448639,
+  "api_base": "http://127.0.0.1:8011",
+  "eval_path": "C:/Users/志賀海/開発/NeuroLikeLab/experiments/eval_100cases.router.jsonl",
+  "n_cases": 100,
+  "ok_rate": 1.0,
+  "invalid_json_rate": 0.0,
+  "decision_eval_n": 100,
+  "decision_accuracy": 0.78,
+  "router_eval_n": 100,
+  "router_accuracy": 1.0,
+  "forced_decision_rate": 0.0,
+  "obedience_drop_rate": 0.008130081300813009,
+  "memory_pollution_rate": 0.12601626016260162,
+  "unnecessary_retrieve_rate": 0.0,
+  "retrieve_count": 0,
+  "retrieve_attempted": 77,
+  "retrieve_skipped_by_gate": 77,
+  "retrieve_executed": 0,
+  "retrieve_hit_rate": 0.0,
+  "retrieve_avg_hits_per_exec": 0.0,
+  "elapsed_sec": 956.3351852893829,
+  "sample_errors": [],
+  "persona_breakdown": [
+    {
+      "persona": "action_v0",
+      "n": 65,
+      "decision_accuracy": 0.8,
+      "router_accuracy": 1.0,
+      "retrieve_attempted": 41,
+      "skipped_by_gate": 41,
+      "executed": 0,
+      "hit_rate": null,
+      "avg_hits_per_exec": null,
+      "memory_pollution_rate": 0.1636
+    },
+    {
+      "persona": "safety_v0",
+      "n": 35,
+      "decision_accuracy": 0.7429,
+      "router_accuracy": 1.0,
+      "retrieve_attempted": 36,
+      "skipped_by_gate": 36,
+      "executed": 0,
+      "hit_rate": null,
+      "avg_hits_per_exec": null,
+      "memory_pollution_rate": 0.0956
+    }
+  ]
+}

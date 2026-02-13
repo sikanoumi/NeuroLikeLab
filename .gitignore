@@ -1,0 +1,13 @@
+﻿.venv/
+__pycache__/
+*.pyc
+node_modules/
+.next/
+
+runs/*.jsonl
+runs/run_ollama_*.jsonl
+
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
