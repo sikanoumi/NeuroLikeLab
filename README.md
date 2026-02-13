@@ -68,27 +68,30 @@ NeuroLikeLab is a minimal, reproducible experimental harness for **“persona as
 READMEの Quickstart セクションを 丸ごとこれに置き換えすれば、各ブロック右上に「コードをコピーする」が出る。
 
 ✅ Quickstart（そのままコピペで“コピー枠”になる版）
-## Quickstart (Windows / PowerShell)
+## Quickstart (Windows / PowerShell) — One-shot
 
-### Setup
 ```powershell
-# in project root
+# =========================================
+# 0) Setup (first time only)
+# =========================================
 python -m pip install -r requirements.txt
 
-
-
-Start server (Ollama + FastAPI)
-
-Start Ollama Desktop beforehand.
-
+# =========================================
+# 1) Start server (Ollama + FastAPI)
+#    Start Ollama Desktop beforehand.
+# =========================================
 $env:OLLAMA_URL="http://127.0.0.1:11434"
 $env:OLLAMA_MODEL="qwen3:8b"
 python -m uvicorn app:app --host 127.0.0.1 --port 8011 --log-level info
 
-Health check
+# =========================================
+# 2) Health check (new terminal)
+# =========================================
 irm http://127.0.0.1:8011/health
 
-Call /persona (PowerShell UTF-8 safe)
+# =========================================
+# 3) Call /persona (PowerShell UTF-8 safe)
+# =========================================
 chcp 65001
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
@@ -107,22 +110,28 @@ irm http://127.0.0.1:8011/persona `
   -Body $bodyBytes `
   -ContentType "application/json; charset=utf-8"
 
-Logs
+# =========================================
+# 4) Logs
+# =========================================
 Get-Content -Encoding utf8 .\runs\run_ollama_001.jsonl -Tail 1
 Get-Content -Encoding utf8 .\runs\metrics_latest.json -Tail 80
 
-Eval (Router100)
+# =========================================
+# 5) Eval (Router100)
+# =========================================
 python .\experiments\run_eval.py
 Get-Content -Encoding utf8 .\runs\metrics_latest.json
 
+---
+
+### 注意（これだけ）
+- `python -m uvicorn ...` は **起動したら止まるまで占有**するので、  
+  **Health check / Call / Logs / Eval は別ターミナルで実行**（コード内にも “new terminal” と書いてある）
 
 ---
 
-### これで「コードをコピーする」が分割で出る条件
-- **各ブロックが ` ```powershell` で始まり ` ``` ` で終わる**
-- 見出し/説明文は **コード枠の外**
+「分割版」と「1枚版」、両方READMEに載せてもいいけど、見栄え優先なら **1枚版だけ**で十分。
 
----
 
-これ貼ったあと、README下の「なるほど…」みたいな会話文が残ってたら消してOK。  
-最後に `git add README.md && git commit -m "README: fix quickstart blocks" && git push` で反映
+
+
