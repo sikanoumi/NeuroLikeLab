@@ -61,11 +61,12 @@ NeuroLikeLab is a minimal, reproducible experimental harness for **“persona as
 
 ---
 
-なるほど。「GitHubのREADMEで **“コードをコピーする” ボタンが付く “灰色のコード枠”**にしたい」ってことね。
-それは コードだけを powershell で囲む必要がある。いまは見出しや説明文までコード枠の中に入ってたり、逆にコード枠が閉じてなくて崩れてるから、ボタンが付かない。
+## Quickstart (Windows / PowerShell)
 
-下のブロックは 全部ちゃんと “コピー枠” になる形で整えてある。
-READMEの Quickstart セクションを 丸ごとこれに置き換えすれば、各ブロック右上に「コードをコピーする」が出る。
+### Setup
+```powershell
+python -m pip install -r requirements.txt
+
 
 ✅ Quickstart（そのままコピペで“コピー枠”になる版）
 ## Quickstart (Windows / PowerShell) — One-shot
