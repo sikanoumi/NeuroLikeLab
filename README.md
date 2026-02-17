@@ -7,28 +7,36 @@
   <img src="https://img.shields.io/badge/LoRA-6f42c1?style=for-the-badge">
 </p>
 
-**text → emotion → latent_state(6-axis) → state_update → persona decision → JSONL logs → eval(metrics)**  
-NeuroLikeLab is a minimal, reproducible experimental harness for **“persona as policy”** research.
+**LLMを「機能」ではなく「運用されるシステム」として作るための、最小・再現可能な実験基盤。**  
+RAG / Agent / Memory の挙動を **JSONLログで観測**し、固定ベンチで **Evals（回帰テスト）→差分比較**まで回せます。
 
-## 完成定義B（研究として完結）
-**3人格（Safety/Action/Creative）**を用意し、**Router（state×task）**が人格を選択。  
-**MemGPT（stm/work/ltm）＋AgeMem（retrieve gate）**を統合し、人格ごとに memory / retrieval policy が変わることを **評価(metrics) と証拠(runs)** で示す。
+**Pipeline:**  
+text → emotion → latent_state(6-axis) → state_update → router(state×task) → persona decision → JSONL logs → eval(metrics)
 
-## What this project demonstrates
-- **Observable pipeline**: all steps are logged in JSONL (UTF-8)
-- **Evaluation loop**: fixed eval cases → metrics JSON → runs evidence
-- **Persona comparison**: Prompt persona (Ollama) vs **LoRA-fixed persona** (WSL + LLaMA-Factory)
-- **Multi-persona Router**: state×task → persona selection (safety/action/creative) + evaluation
+---
+
+## TL;DR
+- **3人格（Safety/Action/Creative）**を用意し、**Router（state×task）**が人格を選択
+- **MemGPT（stm/work/ltm）＋AgeMem（retrieve gate）**を統合し、人格ごとに memory / retrieval policy が変わることを **metrics + runsで証明**
+- **固定ベンチ**で「変更前後の差分」を数値で出せる（= 改善を説明できる）
 
 ---
 
 ## Evidence (fixed snapshot)
-- `runs/metrics_router100_20260213.json`（本READMEの数値の根拠）
-- Standard bench: `experiments/eval_100cases.router100.jsonl`
+- Metrics: `runs/metrics_router100_20260213.json`（本READMEの数値の根拠）
+- Bench: `experiments/eval_100cases.router100.jsonl`
 
 ---
 
-## ① Variant差分（全体）
+## What this project demonstrates
+- **Observable pipeline**: all steps are logged in JSONL (UTF-8)
+- **Evaluation loop**: fixed eval cases → metrics JSON → runs evidence
+- **Multi-persona Router**: state×task → persona selection + evaluation
+- **Persona comparison**: Prompt persona (Ollama) vs **LoRA-fixed persona** (WSL + LLaMA-Factory)
+
+---
+
+## Headline metrics (same eval set, n=100)
 > Portfolio-facing evidence. All variants are evaluated on the same eval set.
 
 | Condition | n_cases | ok_rate | invalid_json | decision_acc | forced_decision | obedience_drop | memory_pollution | unnecessary_retrieve |
@@ -46,7 +54,7 @@ NeuroLikeLab is a minimal, reproducible experimental harness for **“persona as
 
 ---
 
-## ② Persona別差分（Router100 / 2026-02-13）
+## Persona breakdown (Router100 / 2026-02-13)
 > Proof that **routing + memory policy differs by persona** (router + gate logs).
 
 | persona | n | decision_acc | router_acc | retrieve_attempted | skipped_by_gate | executed | hit_rate |
@@ -55,7 +63,14 @@ NeuroLikeLab is a minimal, reproducible experimental harness for **“persona as
 | safety_v0 | 34 | 0.5882 | 1.0000 | 34 | 34 | 0 | - |
 | creative_v0 | 5 | 0.0000 | 1.0000 | 0 | 0 | 0 | - |
 
-> Note: creative cases in the router100 bench are used for **router coverage** (decision labels omitted or treated separately).
+> Note: creative cases are used for **router coverage** (decision labels omitted or treated separately).
+
+---
+
+## Interpretation (3 lines)
+- `decision_acc` is mainly affected by **defer / ask_clarify boundary** for ambiguous inputs.
+- `retrieve_executed=0` shows **AgeMem gate** suppresses retrieval (avoids unnecessary retrieval).
+- Next: tune **gate thresholds / task conditions** or **query normalization** to intentionally execute retrieval and compare.
 
 ---
 
@@ -64,14 +79,7 @@ NeuroLikeLab is a minimal, reproducible experimental harness for **“persona as
 
 - Input → Router selects persona (`routed_persona_id`)
 - Decision + memory actions are visible (`persona.decision`, `memory_action_results`)
-- Same concepts as eval metrics, but reproducible interactively
-
----
-
-## 解釈（3行）
-- `decision_acc` の主因は **defer / ask_clarify 境界**の揺れ（曖昧入力で分岐が割れる）。
-- `retrieve_executed=0` は **AgeMem gate が発火**して retrieve を抑制していることを示す（不要なretrieve回避側に倒れている）。
-- 次の改善は **gate閾値（q_len等）/ task条件**の調整、または **query正規化**で executed を意図的に出して比較可能にする。
+- Same concepts as eval metrics, reproducible interactively
 
 ---
 
@@ -87,7 +95,6 @@ NeuroLikeLab is a minimal, reproducible experimental harness for **“persona as
 | OLLAMA_URL | Ollama endpoint | http://127.0.0.1:11434 |
 | OLLAMA_MODEL | Model name | qwen3:8b |
 
----
 
 ## Quickstart (Windows / PowerShell)
 
